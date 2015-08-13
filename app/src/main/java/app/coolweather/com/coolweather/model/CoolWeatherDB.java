@@ -138,4 +138,52 @@ public class CoolWeatherDB {
         }
         return list;
     }
+
+    /**
+     * 将WeatherInfo实例存储到数据库。
+     */
+    public void saveWeatherInfo(WeatherInfo weatherInfo) {
+        if (weatherInfo != null) {
+            db.delete("WeatherInfo", "countycode = ?",
+                    new String[] { weatherInfo.getCountyCode() });
+
+            ContentValues values = new ContentValues();
+            values.put("countycode", weatherInfo.getCountyCode());
+            values.put("cityname", weatherInfo.getCityName());
+            values.put("temp1", weatherInfo.getTemp1());
+            values.put("temp2", weatherInfo.getTemp2());
+            values.put("weatherdesp", weatherInfo.getWeatherDesp());
+            values.put("publishtime", weatherInfo.getPublishTime());
+            db.insert("WeatherInfo", null, values);
+        }
+    }
+
+    /**
+     * 从数据库读取某城市下所有的县信息。
+     */
+    public WeatherInfo loadWeatherInfo(String countycode) {
+        WeatherInfo weatherInfo = new WeatherInfo();
+        Cursor cursor = db.query("WeatherInfo", null, "countycode = ?",
+                new String[] { countycode }, null, null, null);
+        if (cursor.moveToFirst()) {
+            do {
+
+                weatherInfo.setId(cursor.getInt(cursor.getColumnIndex("id")));
+                weatherInfo.setCountyCode(cursor.getString(cursor
+                        .getColumnIndex("countycode")));
+                weatherInfo.setCityName(cursor.getString(cursor
+                        .getColumnIndex("cityname")));
+                weatherInfo.setTemp1(cursor.getString(cursor
+                        .getColumnIndex("temp1")));
+                weatherInfo.setTemp2(cursor.getString(cursor
+                        .getColumnIndex("temp2")));
+                weatherInfo.setWeatherDesp(cursor.getString(cursor
+                        .getColumnIndex("weatherdesp")));
+                weatherInfo.setPublishTime(cursor.getString(cursor
+                        .getColumnIndex("publishtime")));
+                return weatherInfo;
+            } while (cursor.moveToNext());
+        }
+        return weatherInfo;
+    }
 }

@@ -76,9 +76,12 @@ public class ChooseAreaActivity extends Activity {
         isFromWeatherActivity = getIntent().getBooleanExtra("from_weather_activity", false);
         SharedPreferences prefs = PreferenceManager.
                 getDefaultSharedPreferences(this);
+        String selectedcountycode = prefs.getString("countycode_selected", "");
+
         // 已经选择了城市且不是从WeatherActivity跳转过来,才会直接跳转到WeatherActivity
-        if (prefs.getBoolean("city_selected", false)&& !isFromWeatherActivity) {
+        if (selectedcountycode != "" && !isFromWeatherActivity) {
             Intent intent = new Intent(this, WeatherActivity.class);
+            intent.putExtra("county_code", selectedcountycode);
             startActivity(intent);
             finish();
             return;
